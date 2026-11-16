@@ -277,12 +277,20 @@ elif page == "AI Health Insights":
 
 # -------------------- EMAIL REPORTS --------------------
 
+
 elif page == "Email Reports":
 
     st.subheader("📧 Intelligent Email Reports")
     st.write("Deliver Gemini-generated health insights directly to Gmail.")
 
+    # Read recipient from local .env or Streamlit Cloud Secrets
     recipient = os.getenv("HEALTH_REPORT_EMAIL")
+
+    if not recipient:
+        try:
+            recipient = st.secrets["HEALTH_REPORT_EMAIL"]
+        except Exception:
+            recipient = None
 
     st.markdown('<div class="panel">', unsafe_allow_html=True)
 
@@ -292,7 +300,7 @@ elif page == "Email Reports":
         st.success("Gmail recipient configured")
         st.caption(f"Recipient: {recipient}")
     else:
-        st.error("HEALTH_REPORT_EMAIL is missing from .env")
+        st.error("HEALTH_REPORT_EMAIL is missing from configuration.")
 
     if "health_analysis" not in st.session_state:
         st.warning("Generate a health analysis before sending a report.")
@@ -318,6 +326,7 @@ elif page == "Email Reports":
                 st.error(f"Email delivery failed: {e}")
 
     st.markdown('</div>', unsafe_allow_html=True)
+
 
 # -------------------- FOOTER --------------------
 
